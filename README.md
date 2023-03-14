@@ -25,12 +25,14 @@ encontrar varios archivos en ese formato en cualquier tipo de repositorio
 
 Estos archivos `Markdown` normalmente contienen _links_ (vínculos/ligas) que
 muchas veces están rotos o ya no son válidos y eso perjudica mucho el valor de
-la información que se quiere compartir.
+la información que se quiere compartir. 
 
 Dentro de una comunidad de código abierto, nos han propuesto crear una
 herramienta usando [Node.js](https://nodejs.org/), que lea y analice archivos
 en formato `Markdown`, para verificar los links que contengan y reportar
-algunas estadísticas.
+algunas estadísticas. Por ejemplo en Laboratoria podrían usar esta 
+herramienta para detectar los links rotos en los readmes de los proyectos
+o en un área de facturación verificar los links rotos de una factura dígital.
 
 ![md-links](https://user-images.githubusercontent.com/110297/42118443-b7a5f1f0-7bc8-11e8-96ad-9cc5593715a6.jpg)
 
@@ -39,10 +41,11 @@ algunas estadísticas.
 En este proyecto crearás una herramienta de línea de comando (CLI) así como tu
 propia librería (o biblioteca - library) en JavaScript.
 
-En esta oportunidad nos alejamos un poco del navegador para construir un
-programa que se ejecute usando Node.js. Aprenderemos sobre procesos
+En esta oportunidad **nos alejamos del navegador** para construir un
+programa que se ejecutará en la terminal usando Node.js. La forma en la que interactuaras con esta aplicación es mediante comandos 
+que tu diseñaras/programaras por la terminal/shell. Aprenderemos sobre procesos
 (`process.env`, `process.argv`, ...), cómo interactuar con el sistema archivos,
-cómo hacer consultas de red, etc.
+cómo hacer consultas/peticiones HTTP, etc.
 
 [Node.js](https://nodejs.org/es/) es un entorno de ejecución para JavaScript
 construido con el [motor de JavaScript V8 de Chrome](https://developers.google.com/v8/).
@@ -244,6 +247,9 @@ Reflexiona y luego marca los objetivos que has llegado a entender y aplicar en t
   módulo debe incluir tanto un _ejecutable_ que podamos invocar en la línea de
   comando como una interfaz que podamos importar con `require` para usarlo
   programáticamente.
+  
+ * Recomendamos usar la libreria [chalk](https://www.npmjs.com/package/chalk) para personalizar
+ el estilo de tu aplicación en la terminal.
 
 * Los **tests unitarios** deben cubrir un mínimo del 70% de _statements_,
   _functions_, _lines_ y _branches_. Te recomendamos explorar [Jest](https://jestjs.io/)
@@ -255,9 +261,7 @@ Reflexiona y luego marca los objetivos que has llegado a entender y aplicar en t
 de la función para leer archivos, `readFileSync`, y en cambio intentar
 resolver este desafío de manera asíncrona.
 
-* Para este proyecto es **opcional** el uso de ES Modules `(import/export)`, en el
-  caso optes utilizarlo deberás de crear un script de `build` en el `package.json`
-  que los transforme en `requires` y `module.exports` con ayuda de **babel**.
+* Para este proyecto es **recomendado** el uso de ES Modules `(import/export)`, en lugar de commonJS `(require/module.exports)`.
 
 * Para disminuir la complejidad de tu algoritmo recursivo, te recomendamos
 utilizar la versión síncrona de la función para leer directorios, `readdirSync`.
