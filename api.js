@@ -1,9 +1,7 @@
-// require fs module.
-const fs = requiere('fs');
-// require path module.
-const path = require('path');
-
-TODO://Recibo una ruta
+import fs from 'fs';
+import path from 'path';
+import marked from 'marked';
+import axios from 'axios';
 
 //Esta ruta existe,retorna T/F
 const existsRoute = (route) => fs.existsSync(route);
@@ -14,21 +12,68 @@ const isAbsolute = (route) => path.isAbsolute(route);
 //Convertir de ruta relativa  a ruta absoluta. aqui usare opererador ternario.
 const convertToAbsolute = (route) => (isAbsolute(route) ? route : path.resolve(route));
 
-//Es un directorio, returna T/F
-const isDirectory = (route) => fs.statSync(route).isDirectory();
-TODO://Entrar al directorio.
 
-TODO://Revisar los archivos.
+//---función expresada para  obtener una lista de todos los archivos de  dentro y fuera de un directorio  -------------------------
 
-TODO://Es un archivo md.
+const getAllFiles = function (dirPath) {
+    arrayOfFiles = [];
+    files = fs.readdirSync(dirPath);
 
-TODO://Leer el documento.
+    files.forEach(function (file) {
+        if (fs.statSync(dirPath + "/" + file).isDirectory()) {
+            arrayOfFiles = getAllFiles(dirPath + "/" + file)
+        } else {
+            arrayOfFiles.push(path.join(__dirname, dirPath, "/", file))
+        }
+    });
+    return arrayOfFiles;
+}
 
-//Guardar links en un array de objetos.
+//-------- función para obtener un array  de archivos md ---------------
+const getOnlyMds = function(){
+    const getAllFilesMds = getAllFiles(dirPath);
+    const mdsOnly = getAllFilesMds.filter((file) => {
+        return path.extname(file) === ".md";
+    });
+     
+    if(mdsOnly.length === 0) {
+        console.log('Error: no existe archivos md');
+    }
+}
+
+//--------recibo un archivo markdown y quiero extraer  ---------
+const extractLinksFromMdFile = function(path, callback){
+    //Lee el contenido del archivo Markdown de forma asíncrona.
+    fs.readFile(path, 'utf8',(err, markdown)=>{
+        if (err) {
+            callback(err);
+        } else {
+          //Analiza el contenido del archivo con marked
+          const analyzeContent = marked.Lexer(markdown);
+
+          //Recorrer el arbol AST y busaca nodos que representen enlaces
+          const links = analyzeContent.filter(node => node.type === 'link');
+
+          //Extrae la informacion del enlace de cada nodo encontrado
+          const linksInformation = links.map(link => ({
+            text:link.text,
+            href: link.href
+          }));
+          callback(null, linksInformation);
+        }
+    });
+}
+//--------- validar los links---------------
+
+
 //Checar options.
 
 
 
-module.exports = {
+export {
+    existsRoute,
+    isAbsolute,
+    convertToAbsolute,
+    getAllFiles,
 
 }

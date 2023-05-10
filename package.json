@@ -29,14 +29,17 @@
   },
   "homepage": "https://github.com/zka21/DEV004-md-links#readme",
   "dependencies": {
+    "axios": "^1.4.0",
     "chalk": "^4.1.2",
     "eslint": "^8.39.0",
     "i": "^0.3.7",
+    "marked": "^5.0.1",
     "npm": "^9.6.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.4",
+    "@babel/core": "^7.21.8",
     "@babel/plugin-transform-modules-commonjs": "^7.21.2",
+    "@babel/preset-env": "^7.21.5",
     "babel-jest": "^29.5.0",
     "jest": "^29.5.0"
   }
