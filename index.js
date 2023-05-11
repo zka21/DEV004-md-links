@@ -1,18 +1,37 @@
-import { existsRoute, convertToAbsolute } from "./api.js"
+#! /usr/bin/env node
+import { getAllFiles } from "./api.js"
 
-const mdLinks = (path = "./README.md", options = {}) => {
-  return new Promise((resolve, reject) => {
+const filePath = process.argv[2];
+console.log(getAllFiles(filePath));
 
-    if (!existsRoute(path)) {
-      reject("Esta ruta no existe");
-    } else {
-      convertToAbsolute(path);
-    }
 
-  })
+const mdLinks = (filePath)=> {
+
 }
 
-mdLinks();
-export {
-  mdLinks
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const mdLinks = (path = "./README.md", options = {}) => {
+//   return new Promise((resolve, reject) => {
+
+//     if (!existsRoute(path)) {
+//       reject("Esta ruta no existe");
+//     } else {
+//       convertToAbsolute(path);
+//     }
+
+//   })
+// }

@@ -1,7 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import marked from 'marked';
+import { fileURLToPath } from 'url';
+// import marked from 'marked';
 import axios from 'axios';
+import { log } from 'console';
 
 //Esta ruta existe,retorna T/F
 const existsRoute = (route) => fs.existsSync(route);
@@ -16,16 +18,19 @@ const convertToAbsolute = (route) => (isAbsolute(route) ? route : path.resolve(r
 //---función expresada para  obtener una lista de todos los archivos de  dentro y fuera de un directorio  -------------------------
 
 const getAllFiles = function (dirPath) {
-    arrayOfFiles = [];
-    files = fs.readdirSync(dirPath);
+    let arrayOfFiles = [];
+    let files = fs.readdirSync(dirPath);
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
 
-    files.forEach(function (file) {
-        if (fs.statSync(dirPath + "/" + file).isDirectory()) {
-            arrayOfFiles = getAllFiles(dirPath + "/" + file)
+    files.forEach((file) => {
+        if (fs.statSync(dirPath + "/" + file).isDirectory()){
+            arrayOfFiles.push(...getAllFiles(dirPath + "/" + file))
         } else {
             arrayOfFiles.push(path.join(__dirname, dirPath, "/", file))
         }
     });
+
     return arrayOfFiles;
 }
 
