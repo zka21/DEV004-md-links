@@ -1,5 +1,5 @@
 import  { mdLinks } from '../index';
-import { existsRoute, isAbsolute, convertToAbsolute} from "../api";
+import { existsRoute, isAbsolute, convertToAbsolute, getAllFiles} from "../api";
 
 
 describe('mdLinks', () => {
@@ -31,4 +31,8 @@ describe(convertToAbsolute, () => {
     const pathAbs = "C:\\Users\\Zhaida\\Documents\\laboratoria proyectos\\DEV004-md-links\\README.md";
     expect(convertToAbsolute('./README.md')).toBe(pathAbs);
   })
+})
+
+describe(getAllFiles, () => {
+  it()
 })

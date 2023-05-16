@@ -1,9 +1,8 @@
 import fs from 'fs';
-import path from 'path';
+import path, { resolve } from 'path';
 import { fileURLToPath } from 'url';
-// import marked from 'marked';
 import axios from 'axios';
-import { log } from 'console';
+
 
 //Esta ruta existe,retorna T/F
 const existsRoute = (route) => fs.existsSync(route);
@@ -20,11 +19,12 @@ const convertToAbsolute = (route) => (isAbsolute(route) ? route : path.resolve(r
 const getAllFiles = function (dirPath) {
     let arrayOfFiles = [];
     let files = fs.readdirSync(dirPath);
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
+    const __filename = fileURLToPath(import.meta.url);// para obtener la ruta completa 
+    const __dirname = path.dirname(__filename);// para obtener el directorio actual
 
     files.forEach((file) => {
-        if (fs.statSync(dirPath + "/" + file).isDirectory()){
+        if (fs.statSync(dirPath + "/" + file).isDirectory()) {
+            // use el operador spread para descomponer los elementos de un array y agregarlo individualmente a otro array
             arrayOfFiles.push(...getAllFiles(dirPath + "/" + file))
         } else {
             arrayOfFiles.push(path.join(__dirname, dirPath, "/", file))
@@ -35,44 +35,111 @@ const getAllFiles = function (dirPath) {
 }
 
 //-------- función para obtener un array  de archivos md ---------------
-const getOnlyMds = function(){
-    const getAllFilesMds = getAllFiles(dirPath);
-    const mdsOnly = getAllFilesMds.filter((file) => {
+const getOnlyMds = (arrayFiles) => {
+    const mdsOnly = arrayFiles.filter((file) => {
         return path.extname(file) === ".md";
     });
-     
-    if(mdsOnly.length === 0) {
-        console.log('Error: no existe archivos md');
+
+    if (mdsOnly.length === 0) {
+        throw new Error('Error: no existe archivos md');
     }
+
+    return mdsOnly;
 }
 
-//--------recibo un archivo markdown y quiero extraer  ---------
-const extractLinksFromMdFile = function(path, callback){
-    //Lee el contenido del archivo Markdown de forma asíncrona.
-    fs.readFile(path, 'utf8',(err, markdown)=>{
+//--------funcion para leer archivo  ---------
+const contentOfFiles = (route) => new Promise((resolve, reject) => {
+    // console.log("ëste es route " + route);
+    fs.readFile(route, "utf-8", (err, string) => {
         if (err) {
-            callback(err);
+            reject("No se puede leer el archivo");
         } else {
-          //Analiza el contenido del archivo con marked
-          const analyzeContent = marked.Lexer(markdown);
-
-          //Recorrer el arbol AST y busaca nodos que representen enlaces
-          const links = analyzeContent.filter(node => node.type === 'link');
-
-          //Extrae la informacion del enlace de cada nodo encontrado
-          const linksInformation = links.map(link => ({
-            text:link.text,
-            href: link.href
-          }));
-          callback(null, linksInformation);
+            //console.log("este es un string" + string);
+            resolve(string);
         }
     });
+});
+
+//----------funcion para leer varios archivos--------
+const readMultiplesMdsFiles = (filePaths) => {
+    const promises = filePaths.map(filePath => contentOfFiles(filePath));
+
+    return Promise.all(promises);
 }
+
+//--------funcion para encontrar links en un archivo md-------
+const findLinksInFile = (filePath, fileContent) => {
+    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/gm;
+    const matches = [...fileContent.matchAll(linkRegex)];
+    const links = [];
+
+    for (const match of matches) {
+        const [, text, href, file] = match;
+        links.push({
+            text,
+            href,
+            file: filePath
+        });
+    }
+
+    return links;
+}
+//--------funcion para encontrar links de multiples archivos md-------
+const findLinksInMultipleFiles = (filePaths) => {
+    return readMultiplesMdsFiles(filePaths)
+        .then(textFiles => {
+            const allLinks = [];
+            //console.log("tecttt" + textFiles);
+            for (let i = 0; i < filePaths.length; i++) {
+                if (filePaths.length !== 0) {
+                    const filePath = filePaths[i];
+                    const ContentFile = textFiles[i];
+                    const linksInFile = findLinksInFile(filePath, ContentFile);
+                    allLinks.push(...linksInFile);
+                }
+            }
+            console.log(allLinks);
+            return Promise.resolve(allLinks);
+        })
+
+        .catch(err => {
+            console.error("No se pudo obtener las propiedades del link", err);
+            return Promise.reject(err)
+        });
+
+}
+
 //--------- validar los links---------------
 
-
+const validator = (arrayOfObjOfLinks) => {
+    return Promise.all(
+        arrayOfObjOfLinks.map((cambiarnombre) => {
+            return axios
+                .get(cambiarnombre.href)
+                .then((res) => {
+                    const axios = {
+                        href: cambiarnombre.href,
+                        text: cambiarnombre.text.substring(0, 50),
+                        file: cambiarnombre.file,
+                        status: res.status,
+                        message: "OK"
+                    }
+                    return axios;
+                })
+                .catch((err) => {
+                    const axios = {
+                        href: cambiarnombre.href,
+                        text: cambiarnombre.text.substring(0, 50),
+                        file: cambiarnombre.file,
+                        status: `Fail ${err.message}`,
+                        message: "FAIL",
+                    };
+                    return axios;
+                });
+        })
+    );
+}
 //Checar options.
-
 
 
 export {
@@ -80,5 +147,8 @@ export {
     isAbsolute,
     convertToAbsolute,
     getAllFiles,
-
-}
+    getOnlyMds,
+    findLinksInMultipleFiles,
+    readMultiplesMdsFiles,
+    validator
+};

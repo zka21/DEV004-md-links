@@ -43,10 +43,9 @@
     "babel-jest": "^29.5.0",
     "jest": "^29.5.0"
   },
-  
-    "preferGlobal": true,
-    "bin-links": true,
-    "bin": {
-      "md-links": "index.js"
-    }
+  "preferGlobal": true,
+  "bin-links": true,
+  "bin": {
+    "md-links": "index.js"
   }
+}
