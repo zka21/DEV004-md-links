@@ -43,7 +43,6 @@ const getOnlyMds = (arrayFiles) => {
 
     if (mdsOnly.length === 0) {
         console.log('Error: no existe archivos md');
-        //     // return false;
     }
 
     return mdsOnly;

@@ -2,6 +2,3 @@
 
 [Slack](https://app.slack.com/zhaida.jpg)
 
-
-
-
