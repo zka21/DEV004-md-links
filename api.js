@@ -2,6 +2,7 @@ import fs from 'fs';
 import path, { resolve } from 'path';
 import { fileURLToPath } from 'url';
 import axios from 'axios';
+import { template } from '@babel/core';
 
 
 //Esta ruta existe,retorna T/F
@@ -41,7 +42,8 @@ const getOnlyMds = (arrayFiles) => {
     });
 
     if (mdsOnly.length === 0) {
-        throw new Error('Error: no existe archivos md');
+        console.log('Error: no existe archivos md');
+        //     // return false;
     }
 
     return mdsOnly;
@@ -73,6 +75,11 @@ const findLinksInFile = (filePath, fileContent) => {
     const matches = [...fileContent.matchAll(linkRegex)];
     const links = [];
 
+    if (matches.length === 0) {
+        console.log('No se encontraron enlaces para agregar.');
+        return links
+    }
+
     for (const match of matches) {
         const [, text, href, file] = match;
         links.push({
@@ -88,22 +95,25 @@ const findLinksInFile = (filePath, fileContent) => {
 const findLinksInMultipleFiles = (filePaths) => {
     return readMultiplesMdsFiles(filePaths)
         .then(textFiles => {
+
+            // console.log(textFiles);
             const allLinks = [];
             //console.log("tecttt" + textFiles);
             for (let i = 0; i < filePaths.length; i++) {
                 if (filePaths.length !== 0) {
                     const filePath = filePaths[i];
                     const ContentFile = textFiles[i];
+                    // console.log("esto es content of file" + ContentFile);
+                    // console.log("esto es file path" + filePath);
                     const linksInFile = findLinksInFile(filePath, ContentFile);
                     allLinks.push(...linksInFile);
                 }
             }
-            console.log(allLinks);
+            // console.log(allLinks);
             return Promise.resolve(allLinks);
         })
-
         .catch(err => {
-            console.error("No se pudo obtener las propiedades del link", err);
+            console.log("No se pudo obtener las propiedades del link", err);
             return Promise.reject(err)
         });
 
@@ -112,6 +122,7 @@ const findLinksInMultipleFiles = (filePaths) => {
 //--------- validar los links---------------
 
 const validator = (arrayOfObjOfLinks) => {
+    
     return Promise.all(
         arrayOfObjOfLinks.map((cambiarnombre) => {
             return axios
@@ -119,7 +130,7 @@ const validator = (arrayOfObjOfLinks) => {
                 .then((res) => {
                     const axios = {
                         href: cambiarnombre.href,
-                        text: cambiarnombre.text.substring(0, 50),
+                        text: cambiarnombre.text,
                         file: cambiarnombre.file,
                         status: res.status,
                         message: "OK"
@@ -127,21 +138,20 @@ const validator = (arrayOfObjOfLinks) => {
                     return axios;
                 })
                 .catch((err) => {
+
                     const axios = {
                         href: cambiarnombre.href,
-                        text: cambiarnombre.text.substring(0, 50),
+                        text: cambiarnombre.text,
                         file: cambiarnombre.file,
-                        status: `Fail ${err.message}`,
+                        status: err.message,
                         message: "FAIL",
                     };
                     return axios;
                 });
         })
     );
+    
 }
-//Checar options.
-
-
 export {
     existsRoute,
     isAbsolute,

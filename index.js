@@ -1,73 +1,59 @@
-#! /usr/bin/env node
-import { resolvePlugin } from "@babel/core";
+
 import {
     existsRoute,
     convertToAbsolute,
     readMultiplesMdsFiles,
     findLinksInMultipleFiles,
-    getAllFiles, validator
+    getAllFiles, validator, getOnlyMds
 } from "./api.js";
 
-const filePath = process.argv[2];
-// console.log(getAllFiles(filePath));
-
-
-// const mdLinks = (process.argv[2], options = {}) => {
-//   return new Promise((resolve, reject) => {
-
-if (existsRoute(filePath) === false) {
-    console.log("Esta ruta no existe, intente con otra.");
-} else {
-    console.log("Esta es la ruta convertida" + " " + convertToAbsolute(filePath));
-    let allFiles = getAllFiles(filePath);
-    console.log(allFiles);
-    if (readMultiplesMdsFiles(allFiles).length !== 0) {
-        findLinksInMultipleFiles(allFiles)
-            .then((res) => {
-                console.log("cargando links");
-                validator(res).then((val) => {
-                    console.log(val);
-                });
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }
-}
-
-
-
+// const getDatos = () => {
+//     return new Promise((resolve, reject) => {
+//         getName().then((infoNombre) => {
+//             resolve(`El nombre es: ${infoNombre}`)
+//         })
 //     })
 // }
 
+// const getName = () => {
+//     return new Promise((resolve, reject) => {
+//         resolve('Zhaida');
+//     })
+// }
+
+const mdLinks = (filePath, options = {}) => {
+    return new Promise((resolve, reject) => {
+
+        if (existsRoute(filePath) === false) {
+            reject("Esta ruta no existe, intente con otra.");
+        } else {
+            console.log("Esta es la ruta convertida" + " " + convertToAbsolute(filePath));
+            let allFiles = getAllFiles(filePath);
+            let allFilesMd = getOnlyMds(allFiles);
+
+            // if(allFiles.length == 0) {
+            //     reject('no hay archivos ')
+            // }
+            console.log(allFilesMd);
+
+            getOnlyMds(allFiles)
 
 
-
-
-
-
-// .then(links => {
-//     console.log('Enalces encontrados:');
-//     for(const link of links) {
-//         console.log(`Enlace: ${link.text}`);
-//         console.log(`URL: ${link.href}`);
-//         console.log(`Archivo: ${link.file}`);
-//     }
-// })
-// .catch(err => {
-//     console.log('Error', err);
-// })
-
-
-
-
-
-
-
-
-
-
-
+            findLinksInMultipleFiles(allFilesMd)
+                .then((res) => {
+                    console.log("cargando links");
+                    validator(res).then((val) => {
+                        resolve(val);
+                    }) .catch((err) => {
+                        reject(err)
+                    });
+                })
+                .catch((err) => {
+                    reject(err);
+                });
+        }
+    });
+};
 
 
 //------STATS--------
@@ -91,5 +77,6 @@ const uniqueStats = (links) => {
 export {
     statsTotal,
     brokenStats,
-    uniqueStats
+    uniqueStats,
+    mdLinks,
 }

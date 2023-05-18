@@ -46,6 +46,6 @@
   "preferGlobal": true,
   "bin-links": true,
   "bin": {
-    "md-links": "index.js"
+    "md-links": "cli.js"
   }
 }
