@@ -143,7 +143,7 @@ const validator = (arrayOfObjOfLinks) => {
                         href: cambiarnombre.href,
                         text: cambiarnombre.text,
                         file: cambiarnombre.file,
-                        status: err.message,
+                        status: err?.response?.status,
                         message: "FAIL",
                     };
                     return axios;

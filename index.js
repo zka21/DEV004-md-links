@@ -1,4 +1,3 @@
-
 import {
     existsRoute,
     convertToAbsolute,
@@ -7,6 +6,7 @@ import {
     getAllFiles, validator, getOnlyMds
 } from "./api.js";
 
+// import { c}
 // const getDatos = () => {
 //     return new Promise((resolve, reject) => {
 //         getName().then((infoNombre) => {
