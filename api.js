@@ -20,7 +20,7 @@ const convertToAbsolute = (route) => (isAbsolute(route) ? route : path.resolve(r
 const getAllFiles = function (dirPath) {
     let arrayOfFiles = [];
     let files = fs.readdirSync(dirPath);
-    const __filename = fileURLToPath(import.meta.url);// para obtener la ruta completa 
+    const __filename = fileURLToPath(import.meta.url);// para obtener la ruta completa
     const __dirname = path.dirname(__filename);// para obtener el directorio actual
 
     files.forEach((file) => {
@@ -75,8 +75,8 @@ const findLinksInFile = (filePath, fileContent) => {
     const links = [];
 
     if (matches.length === 0) {
-        console.log('No se encontraron enlaces para agregar.');
-        return links
+        console.log('Hay un archivo(s) que no tiene links');
+        // return links
     }
 
     for (const match of matches) {
@@ -86,8 +86,8 @@ const findLinksInFile = (filePath, fileContent) => {
             href,
             file: filePath
         });
+        
     }
-
     return links;
 }
 //--------funcion para encontrar links de multiples archivos md-------
@@ -121,7 +121,7 @@ const findLinksInMultipleFiles = (filePaths) => {
 //--------- validar los links---------------
 
 const validator = (arrayOfObjOfLinks) => {
-    
+
     return Promise.all(
         arrayOfObjOfLinks.map((cambiarnombre) => {
             return axios
@@ -149,14 +149,16 @@ const validator = (arrayOfObjOfLinks) => {
                 });
         })
     );
-    
+
 }
 export {
     existsRoute,
     isAbsolute,
     convertToAbsolute,
     getAllFiles,
+    contentOfFiles,
     getOnlyMds,
+    findLinksInFile,
     findLinksInMultipleFiles,
     readMultiplesMdsFiles,
     validator

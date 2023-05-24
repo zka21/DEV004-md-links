@@ -31,7 +31,7 @@ const mdLinks = (filePath, options = {}) => {
                         resolve(val);
                     }) .catch((err) => {
                         reject(err)
-                    });
+                    }); 
                 })
                 .catch((err) => {
                     reject(err);

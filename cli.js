@@ -3,16 +3,6 @@ import { resolvePlugin } from "@babel/core";
 import chalk from 'chalk';
 
 import { statsTotal, brokenStats, uniqueStats, mdLinks } from "./index.js"
-import {
-    existsRoute,
-    convertToAbsolute,
-    readMultiplesMdsFiles,
-    findLinksInMultipleFiles,
-    getAllFiles,
-    validator,
-    getOnlyMds
-} from "./api.js"
-
 
 const filePath = process.argv[2];
 
