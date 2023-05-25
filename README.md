@@ -6,7 +6,7 @@
 * [2. Objetivos de aprendizaje](#2-objetivos-de-aprendizaje)
 * [3. Diagrama de Flujo](#3-diagrama-de-flujo)
 * [4. Instalacion y Uso](#4-instalacion-y-uso)
-* [5. Pruebas Unitarias](#5-pruebas-unitarias)
+
 
 ***
 
@@ -215,5 +215,5 @@ Por ejemplo:
 ![statsyvalidate](/Imagenes/--validate%20--stats.png)
 
 
-## 5. Pruebas Unitarias
+
 

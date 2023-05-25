@@ -29,18 +29,14 @@ if (process.argv[2] === undefined) {
 
 }
 
-if (process.argv[2] === "--help") {
+else if (process.argv[2] === "--help") {
     console.log(chalk.bold.cyan(`Para validar los links de tu(s) archivo(s), puedes usar las siguientes opciones:
 
                 --validate: Revisa si tu(s) link(s) funciona o no, 
                 --stats: Te dará la cantidad total de links y cantidad de links unicos,
                 --validate--stats: Te dará la cantidad total de links,cantidad de links unicos
                                    y cantidad de links rotos"`));
-} else {
-    // console.log(chalk.bold.blue('hello world'));
-    // console.log(chalk.inverse.green("hola mundo"));
-    // console.log(chalk.bgMagentaBright.green("hola mundo"));
-
+} else  {
     mdLinks(filePath, { validate: true })
         .then((res) => {
             const total = `Total: ${statsTotal(res)}`;

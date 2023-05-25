@@ -121,8 +121,9 @@ const findLinksInMultipleFiles = (filePaths) => {
 //--------- validar los links---------------
 
 const validator = (arrayOfObjOfLinks) => {
-
     return Promise.all(
+       
+
         arrayOfObjOfLinks.map((cambiarnombre) => {
             return axios
                 .get(cambiarnombre.href)
