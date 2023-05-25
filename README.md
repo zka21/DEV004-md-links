@@ -153,7 +153,7 @@ algunas estadísticas.
 #### Instalación
 Mediante npm, colocando en la terminal:
 
-npm ----
+npm i md-links-zhaida
 
 #### Uso
 
